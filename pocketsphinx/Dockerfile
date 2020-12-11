@@ -1,5 +1,7 @@
 FROM docker.io/ubuntu:20.04
 
+LABEL org.opencontainers.image.source=https://github.com/drogue-iot/hey-rodney
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
