@@ -6,6 +6,7 @@ on:
       - 'pocketsphinx/**'
     branches:
       - main
+  workflow_dispatch: {}
 
 jobs:
 
