@@ -89,4 +89,4 @@ Cons:
 
 ## Speech to text
 
-Currently handled by: https://github.com/drogue-iot/watson-speech-to-text-converter
+This is currently handled by: https://github.com/drogue-iot/watson-speech-to-text-converter

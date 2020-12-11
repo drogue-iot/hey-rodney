@@ -1,0 +1,48 @@
+name: pocketsphinx
+
+on:
+  push:
+    paths:
+      - 'pocketsphinx/**'
+    branches:
+      - main
+
+jobs:
+
+  build:
+    runs-on: ubuntu-20.04
+
+    env:
+      IMAGE_NAME: hey-rodney-pocketsphinx
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
+
+      - name: Login to github container repository
+        if: ${{github.head_ref == ''}} # only for non-PRs
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build, tag, and push
+        if: ${{github.head_ref == ''}} # only for non-PRs
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          docker buildx build pocketsphinx --push --platform linux/amd64,linux/arm64,linux/arm/v7 --tag $IMAGE_ID:$VERSION
