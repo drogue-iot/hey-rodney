@@ -1,6 +1,23 @@
-# "Hey Rodney"
+# "Hey Rodney, …"
 
-## Mycroft Precise
+The overall idea is to have a voice assistant for Kubernetes. Re-using the components that we build in
+[Drogue IoT](https://github.com/drogue-iot).
+
+In a nutshell:
+
+* A container runs on the edge
+    * Listen for the wake word "Hey Rondey"
+    * Record the audio, following the wake word, for up to X seconds
+    * Send the audio to the cloud backend for processing
+* On the cloud side
+    * Receive the audio samples
+    * Run them through the speech-to-text API (audio -> json)
+    * Evaluate the outcome of the request (audio response, command execution)
+    * Process outcome
+
+## Wake word detection
+
+### Mycroft Precise
 
 Build:
 
@@ -21,8 +38,9 @@ Cons:
 
   * Rarely triggers
   * Hard to set up
+  * No silence detection
 
-## Pocketsphinx
+### Pocketsphinx
 
 Build:
 
@@ -38,13 +56,14 @@ podman run --rm -ti -v /run/user/(id -u)/:/run/user/(id -u)/ -e DEVICE_ID=rodney
 
 Pros:
 
-  * Triggers in most cases
+  * Easy to configure
+  * Provides silence detection
 
 Cons:
 
-  * Many false positives
+  * Either triggers to often, or not often enough
 
-## Vosk & Kaldi
+### Vosk & Kaldi
 
 Run server:
 
@@ -67,3 +86,7 @@ Cons:
 
   * Need to filter out "wake word" variants ( "he wrote me" -> "hey rodney" )
   * Accuracy is poor
+
+## Speech to text
+
+Currently handled by: https://github.com/drogue-iot/watson-speech-to-text-converter
