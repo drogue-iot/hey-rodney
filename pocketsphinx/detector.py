@@ -1,5 +1,6 @@
 # Copyright (c) 1999-2016 Carnegie Mellon University. All rights
 # reserved.
+# Copyright (c) 2020 Red Hat Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -39,15 +40,6 @@ import time
 import wave
 
 import requests
-from urllib.parse import urljoin, urlencode, quote
-
-model_id = os.getenv('MODEL_ID', "ctron.hey.rodney:1.0.0")
-device_id = quote(os.environ['DEVICE_ID'])
-
-endpoint = os.environ['ENDPOINT']
-path = f"/publish/{device_id}/voice"
-query = "?" + urlencode(dict(model_id=model_id))
-url = urljoin(endpoint, path + query)
 
 DefaultConfig = Decoder.default_config
 
@@ -181,6 +173,10 @@ class LiveSpeechDetector(BasicDetector):
 
         self.keyphrase = kwargs.get('keyphrase')
 
+        self.url = kwargs.pop('url', None)
+        self.auth = kwargs.pop('auth', None)
+        self.mime_type = kwargs.get('mime_type')
+
         self.buf = bytearray(self.buffer_size)
         self.ad = Ad(self.audio_device, self.sampling_rate)
 
@@ -243,8 +239,9 @@ class LiveSpeechDetector(BasicDetector):
             data = f.getvalue()
             print(f'Bytes of data: {len(data)}')
 
-            res = requests.post(url, data=data, headers={"Content-Type": "audio/vnd.wave;codec=1"})
-            print(res)
+            if self.url:
+                res = requests.post(self.url, data=data, auth=self.auth, headers={"Content-Type": "audio/vnd.wave;codec=1"})
+                print(res)
 
     def notify_start(self):
         print("Start listening...")
