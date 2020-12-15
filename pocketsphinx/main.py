@@ -53,6 +53,7 @@ config = {
     'audio_device': args.input,
     'sound_start': "/hey-rodney/start.wav",
     'sound_end': "/hey-rodney/end.wav",
+    'output_device': args.output,
     'url': url,
     'auth': auth,
     'mime_type': args.mime,
