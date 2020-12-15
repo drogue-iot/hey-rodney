@@ -1,0 +1,17 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hey-rodney-backend
+  labels:
+    app.kubernetes.io/name: hey-rodney-backend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: hey-rodney
+spec:
+  template:
+    spec:
+      containers:
+      - env:
+        image: ghcr.io/drogue-iot/hey-rodney-backend:latest
+        resources:
+          limits:
+            memory: 128Mi

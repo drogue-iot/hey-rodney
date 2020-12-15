@@ -1,0 +1,17 @@
+apiVersion: sources.knative.dev/v1alpha1
+kind: KafkaSource
+metadata:
+  name: hey-rodney
+  labels:
+    app.kubernetes.io/part-of: hey-rodney
+spec:
+  consumerGroup: hey-rodney
+  bootstrapServers:
+    - kafka-eventing-kafka-bootstrap.knative-eventing.svc:9092
+  topics:
+    - knative-messaging-kafka.drogue-iot.iot-channel
+  sink:
+    ref:
+      apiVersion: flows.knative.dev/v1
+      kind: Sequence
+      name: hey-rodney

@@ -1,0 +1,24 @@
+apiVersion: flows.knative.dev/v1
+kind: Sequence
+metadata:
+  name: hey-rodney
+  labels:
+    app.kubernetes.io/name: hey-rodney
+    app.kubernetes.io/part-of: hey-rodney
+spec:
+  channelTemplate:
+    apiVersion: messaging.knative.dev/v1alpha1
+    kind: KafkaChannel
+    spec:
+      numPartitions: 1
+      replicationFactor: 1
+  steps:
+    - ref:
+        apiVersion: serving.knative.dev/v1
+        kind: Service
+        name: watson-stt-converter
+  reply:
+    ref:
+      kind: Service
+      apiVersion: serving.knative.dev/v1
+      name: hey-rodney-backend
