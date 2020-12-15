@@ -6,7 +6,7 @@ The overall idea is to have a voice assistant for Kubernetes. Re-using the compo
 In a nutshell:
 
 * A container runs on the edge
-    * Listen for the wake word "Hey Rondey"
+    * Listen for the wake word "Hey Rodney"
     * Record the audio, following the wake word, for up to X seconds
     * Send the audio to the cloud backend for processing
 * On the cloud side
@@ -15,7 +15,21 @@ In a nutshell:
     * Evaluate the outcome of the request (audio response, command execution)
     * Process outcome
 
-## Wake word detection
+## Words of caution!
+
+* This is a demo. Don't expect too much ;-)
+* The accuracy of wake word and speech recognition is highly dependency on the microphone you use. Really, I mean it!
+  
+  If you feel that it is bad, double check the quality of your recordings.
+
+## Installation
+
+Check out the installation here: [pocketsphinx/](pocketsphinx/).
+
+**Note:** This installation is based on *Pocketsphinx* for the moment. See below for evaluations of the different
+options of wake word detection. Feel free to propose additional options.
+
+## Evaluation of wake word detection solutions
 
 ### Mycroft Precise
 
