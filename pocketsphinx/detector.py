@@ -202,7 +202,6 @@ class LiveSpeechDetector(BasicDetector):
                     if self.in_speech != self.get_in_speech():
                         # detect speech
                         self.in_speech = self.get_in_speech()
-                        print(f'InSpeech: {self.in_speech}')
 
                     if self.recording:
 
