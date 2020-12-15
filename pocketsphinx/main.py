@@ -21,6 +21,7 @@ parser.add_argument('-d', '--device-id', dest='device', help='Device ID', requir
 parser.add_argument('-m', '--model-id', dest='model', help='Model ID', default='ctron.hey.rodney:1.0.0')
 parser.add_argument('-M', '--mime-type', dest='mime', help='The mime type used to send the audio snippet',
                     default='audio/wav')
+parser.add_argument('--agc', dest='agc')
 args = parser.parse_args()
 
 force_alsa = os.getenv("FORCE_ALSA", "false")
@@ -56,6 +57,7 @@ config = {
     'auth': auth,
     'mime_type': args.mime,
     'force_alsa': force_alsa,
+    'agc': args.agc,
 }
 
 speech = LiveSpeechDetector(**config)

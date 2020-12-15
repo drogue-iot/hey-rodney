@@ -176,7 +176,7 @@ class LiveSpeechDetector(BasicDetector):
 
         self.url = kwargs.pop('url', None)
         self.auth = kwargs.pop('auth', None)
-        self.mime_type = kwargs.get('mime_type')
+        self.mime_type = kwargs.pop('mime_type')
 
         self.buf = bytearray(self.buffer_size)
         self.ad = Ad(self.audio_device, self.sampling_rate)
