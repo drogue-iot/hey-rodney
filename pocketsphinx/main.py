@@ -41,6 +41,8 @@ path = f"/publish/{device_id}/voice"
 query = "?" + urlencode(dict(model_id=model_id))
 url = urljoin(endpoint, path + query)
 
+print(f'Endpoint: {url}')
+
 model_path = get_model_path()
 
 config = {
