@@ -13,7 +13,7 @@ spec:
           value: voice
         - name: RUST_LOG
           value: debug
-        image: ghcr.io/drogue-iot/watson-speech-to-text-converter:latest
+        image: ghcr.io/drogue-iot/watson-speech-to-text-converter:0.1.0
         resources:
           limits:
             memory: 32Mi
