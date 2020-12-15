@@ -14,14 +14,16 @@ parser.add_argument('-t', '--threshold', dest='threshold', default='1e-20',
                     type=float, help='KWS threshold (default: 1e-20)')
 parser.add_argument('-i', '--input', dest='input', help='Input device for recording')
 parser.add_argument('-o', '--output', dest='output', help='Output device for notification sounds')
-parser.add_argument('-e', '--endpoint', dest='endpoint', help='Cloud side endpoint')
+parser.add_argument('-e', '--endpoint', dest='endpoint', help='Cloud side endpoint', required=True)
 parser.add_argument('-u', '--user', dest='username', help='Username of the device in the cloud')
 parser.add_argument('-p', '--password', dest='password', help='Password of the device in the cloud')
-parser.add_argument('-d', '--device-id', dest='device', help='Device ID')
+parser.add_argument('-d', '--device-id', dest='device', help='Device ID', required=True)
 parser.add_argument('-m', '--model-id', dest='model', help='Model ID', default='ctron.hey.rodney:1.0.0')
 parser.add_argument('-M', '--mime-type', dest='mime', help='The mime type used to send the audio snippet',
                     default='audio/wav')
 args = parser.parse_args()
+
+force_alsa = os.getenv("FORCE_ALSA", "false")
 
 endpoint_user = args.username
 endpoint_password = args.password
@@ -53,6 +55,7 @@ config = {
     'url': url,
     'auth': auth,
     'mime_type': args.mime,
+    'force_alsa': force_alsa,
 }
 
 speech = LiveSpeechDetector(**config)

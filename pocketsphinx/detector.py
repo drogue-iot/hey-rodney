@@ -170,6 +170,7 @@ class LiveSpeechDetector(BasicDetector):
         self.notification_start = kwargs.pop('sound_start', None)
         self.notification_end = kwargs.pop('sound_end', None)
         self.output_device = kwargs.pop('output_device', None)
+        self.force_alsa = kwargs.pop('force_alsa', False)
 
         self.keyphrase = kwargs.get('keyphrase')
 
@@ -258,9 +259,13 @@ class LiveSpeechDetector(BasicDetector):
 
         out = ""
         if self.output_device:
+            # aplay and paplay use the same argument for selecting a device (--device)
             out = f" --device={self.output_device}"
 
-        cmd = f"paplay {wav}{out}"
+        if self.force_alsa:
+            cmd = f"aplay {wav}{out}"
+        else:
+            cmd = f"paplay {wav}{out}"
 
         print(f"Executing: '{cmd}'")
         os.system(cmd)
