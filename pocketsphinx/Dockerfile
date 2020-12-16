@@ -8,23 +8,19 @@ RUN apt-get update \
  && apt-get install -y vim alsa-utils pulseaudio-utils python3 python3-pip \
  && apt-get install -y python3-dev build-essential swig git libpulse-dev libasound2-dev \
  && pip3 install --upgrade pocketsphinx \
- && pip3 install requests wave \
+ && pip3 install requests wave numpy \
+ && pip3 install git+https://github.com/TeamPyOgg/PyOgg@c78487ef52960d98ab3af5b66a744af8a5efe686 \
  && rm -Rf ~/.cache/pip \
  && apt-get -y purge python3-dev build-essential swig git libpulse-dev libasound2-dev \
  && apt-get -y autoremove --purge \
  && apt-get -y autoclean \
  && apt-get -y clean
 
-#RUN python3 -m pip install --upgrade pip setuptools wheel
-#RUN pip3 install --upgrade pocketsphinx
-#RUN pip3 install requests wave
-
-#WORKDIR pocketsphinx-python
-#RUN python3 setup.py install
-
 RUN mkdir hey-rodney
 COPY sounds /hey-rodney
-COPY *.py /hey-rodney/
 COPY main.sh /hey-rodney/
+COPY *.py /hey-rodney/
+
+RUN apt-get install -y libopus0 libopusfile0 opus-tools
 
 ENTRYPOINT ["/hey-rodney/main.sh"]

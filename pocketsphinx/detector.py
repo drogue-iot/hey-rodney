@@ -38,6 +38,7 @@ from sphinxbase import *
 from pocketsphinx import *
 import time
 import wave
+import pyogg
 
 import requests
 
@@ -45,7 +46,7 @@ DefaultConfig = Decoder.default_config
 
 
 def sizeof_fmt(num, suffix='B'):
-    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+    for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
         if abs(num) < 1024.0:
             return "%3.1f%s%s" % (num, unit, suffix)
         num /= 1024.0
@@ -193,6 +194,9 @@ class LiveSpeechDetector(BasicDetector):
         self.recording = None
         self.recording_buffer = None
 
+        payload_format = kwargs.pop('payload_format', None)
+        self.use_opus = payload_format == "opus"
+
         super(LiveSpeechDetector, self).__init__(**kwargs)
 
     def __iter__(self):
@@ -221,7 +225,7 @@ class LiveSpeechDetector(BasicDetector):
                             print("")
                             # stop after 30 seconds or after 2 seconds of silence after start
                             self.notify_end()
-                            print(f"Recorded {reclen} seconds of audio")
+                            print("Recorded %.1f seconds of audio" % reclen)
                             self.send_sample()
                             self.recording = None
                             self.recording_buffer = None
@@ -238,6 +242,12 @@ class LiveSpeechDetector(BasicDetector):
         raise StopIteration
 
     def send_sample(self):
+        if self.use_opus:
+            self.send_sample_opus()
+        else:
+            self.send_sample_wav()
+
+    def send_sample_wav(self):
         # print(f'Buffer size: {len(self.recording_buffer)}')
         with io.BytesIO() as f:
             with wave.open(f, mode='wb') as wav:
@@ -246,12 +256,34 @@ class LiveSpeechDetector(BasicDetector):
                 wav.setsampwidth(2)
                 wav.writeframes(self.recording_buffer)
 
-            data = f.getvalue()
-            print(f'Payload size: {sizeof_fmt(len(data))}')
+            self.send_sample_payload(f.getvalue(), "audio/vnd.wave;codec=1")
 
-            if self.url:
-                res = requests.post(self.url, data=data, auth=self.auth, headers={"Content-Type": "audio/vnd.wave;codec=1"})
-                print(res)
+    def send_sample_opus(self):
+
+        now = time.perf_counter_ns()
+
+        encoder = pyogg.OpusBufferedEncoder()
+        encoder.set_application("voip")
+        encoder.set_sampling_frequency(self.sampling_rate)
+        encoder.set_channels(1)
+        encoder.set_frame_size(20)  # 20ms is the opus default
+
+        with io.BytesIO() as f:
+            ogg = pyogg.OggOpusWriter(f, encoder)
+            ogg.write(self.recording_buffer)
+            ogg.close()
+
+            dur = (time.perf_counter_ns() - now) / 1000
+            print(f"Encoding time: {dur} ms")
+
+            self.send_sample_payload(f.getvalue(), "audio/ogg;codecs=opus")
+
+    def send_sample_payload(self, data, mimetype):
+        print(f'Payload size: {sizeof_fmt(len(data))}')
+
+        if self.url:
+            res = requests.post(self.url, data=data, auth=self.auth, headers={"Content-Type": mimetype})
+            print(res)
 
     def notify_start(self):
         print("Start listening...")

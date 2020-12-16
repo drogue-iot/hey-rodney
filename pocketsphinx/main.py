@@ -22,6 +22,8 @@ parser.add_argument('-m', '--model-id', dest='model', help='Model ID', default='
 parser.add_argument('-M', '--mime-type', dest='mime', help='The mime type used to send the audio snippet',
                     default='audio/wav')
 parser.add_argument('--agc', dest='agc')
+parser.add_argument('--payload-format', dest='payload_format',
+                    help='The encoding of the payload format (default: wav, other: opus)', default='wav')
 args = parser.parse_args()
 
 force_alsa = os.getenv("FORCE_ALSA", "false")
@@ -61,6 +63,7 @@ config = {
     'mime_type': args.mime,
     'force_alsa': force_alsa,
     'agc': args.agc,
+    'payload_format': args.payload_format,
 }
 
 speech = LiveSpeechDetector(**config)
