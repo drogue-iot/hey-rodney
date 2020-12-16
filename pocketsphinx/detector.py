@@ -196,6 +196,7 @@ class LiveSpeechDetector(BasicDetector):
 
         payload_format = kwargs.pop('payload_format', None)
         self.use_opus = payload_format == "opus"
+        self.opus_application = kwargs.pop('opus_application', 'voip')
 
         super(LiveSpeechDetector, self).__init__(**kwargs)
 
@@ -263,7 +264,7 @@ class LiveSpeechDetector(BasicDetector):
         now = time.perf_counter_ns()
 
         encoder = pyogg.OpusBufferedEncoder()
-        encoder.set_application("voip")
+        encoder.set_application(self.opus_application)
         encoder.set_sampling_frequency(self.sampling_rate)
         encoder.set_channels(1)
         encoder.set_frame_size(20)  # 20ms is the opus default
@@ -274,7 +275,7 @@ class LiveSpeechDetector(BasicDetector):
             ogg.close()
 
             dur = (time.perf_counter_ns() - now) / 1000
-            print(f"Encoding time: {dur} ms")
+            print("Encoding time: %.1f s" % dur)
 
             self.send_sample_payload(f.getvalue(), "audio/ogg;codecs=opus")
 
