@@ -205,7 +205,10 @@ class LiveSpeechDetector(BasicDetector):
     def __iter__(self):
         with self.ad:
             with self.start_utterance():
-                while rlen := self.ad.readinto(self.buf) >= 0:
+                while (rlen := self.ad.readinto(self.buf)) >= 0:
+
+                    if rlen == 0:
+                        continue
 
                     if self.debug:
                         print(f'Buffer {self.buffer_size} - Read: {rlen}')
