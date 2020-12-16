@@ -207,6 +207,7 @@ class LiveSpeechDetector(BasicDetector):
             with self.start_utterance():
                 while (rlen := self.ad.readinto(self.buf)) >= 0:
 
+                    rlen = rlen * 2  # int16, which is two bytes
                     if rlen == 0:
                         continue
 
