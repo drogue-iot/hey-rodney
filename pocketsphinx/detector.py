@@ -274,7 +274,7 @@ class LiveSpeechDetector(BasicDetector):
             ogg.write(self.recording_buffer)
             ogg.close()
 
-            dur = (time.perf_counter_ns() - now) / (1000 * 1000)
+            dur = (time.perf_counter_ns() - now) / (1000 * 1000 * 1000)
             print("Encoding time: %.1f s" % dur)
 
             self.send_sample_payload(f.getvalue(), "audio/ogg;codecs=opus")
