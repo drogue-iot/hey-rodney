@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/drogue-iot/hey-rodney
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
- && apt-get install -y vim alsa-utils pulseaudio-utils python3 python3-pip \
+ && apt-get install -y vim alsa-utils pulseaudio-utils python3 python3-pip libopus0 libopusfile0 opus-tools \
  && apt-get install -y python3-dev build-essential swig git libpulse-dev libasound2-dev \
  && pip3 install --upgrade pocketsphinx \
  && pip3 install requests wave numpy \
@@ -20,7 +20,5 @@ RUN mkdir hey-rodney
 COPY sounds /hey-rodney
 COPY main.sh /hey-rodney/
 COPY *.py /hey-rodney/
-
-RUN apt-get install -y libopus0 libopusfile0 opus-tools
 
 ENTRYPOINT ["/hey-rodney/main.sh"]
