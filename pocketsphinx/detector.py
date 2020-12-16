@@ -198,16 +198,23 @@ class LiveSpeechDetector(BasicDetector):
         self.use_opus = payload_format == "opus"
         self.opus_application = kwargs.pop('opus_application', 'voip')
 
+        self.debug = os.getenv("DEBUG") == "true"
+
         super(LiveSpeechDetector, self).__init__(**kwargs)
 
     def __iter__(self):
         with self.ad:
             with self.start_utterance():
-                while self.ad.readinto(self.buf) >= 0:
-                    self.process_raw(self.buf, self.no_search, self.full_utt)
+                while rlen := self.ad.readinto(self.buf) >= 0:
+
+                    if self.debug:
+                        print(f'Buffer {self.buffer_size} - Read: {rlen}')
+
+                    buf = self.buf[0:rlen]
+                    self.process_raw(buf, self.no_search, self.full_utt)
 
                     if self.recording:
-                        self.recording_buffer.extend(self.buf)
+                        self.recording_buffer.extend(buf)
                         print(f"\rBuffer len = {len(self.recording_buffer)}", end='')
 
                     now = time.time()
