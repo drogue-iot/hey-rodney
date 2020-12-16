@@ -14,7 +14,7 @@ parser.add_argument('-t', '--threshold', dest='threshold', default='1e-20',
                     type=float, help='KWS threshold (default: 1e-20)')
 parser.add_argument('-i', '--input', dest='input', help='Input device for recording')
 parser.add_argument('-s', '--sampling-rate', dest='sampling_rate', help='Sample rate in Hz (default: 16000)',
-                    type=int)
+                    type=int, default="16000")
 parser.add_argument('-o', '--output', dest='output', help='Output device for notification sounds')
 parser.add_argument('-e', '--endpoint', dest='endpoint', help='Cloud side endpoint', required=True)
 parser.add_argument('-u', '--user', dest='username', help='Username of the device in the cloud')
