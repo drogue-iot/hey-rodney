@@ -13,6 +13,7 @@ parser.add_argument('-k', '--keyphrase', dest='keyphrase', default='rodney',
 parser.add_argument('-t', '--threshold', dest='threshold', default='1e-20',
                     type=float, help='KWS threshold (default: 1e-20)')
 parser.add_argument('-i', '--input', dest='input', help='Input device for recording')
+parser.add_argument('-s', '--sampling-rate', dest='sample_rate', help='Sample rate in Hz (default: 16000)')
 parser.add_argument('-o', '--output', dest='output', help='Output device for notification sounds')
 parser.add_argument('-e', '--endpoint', dest='endpoint', help='Cloud side endpoint', required=True)
 parser.add_argument('-u', '--user', dest='username', help='Username of the device in the cloud')
@@ -64,6 +65,7 @@ config = {
     'force_alsa': force_alsa,
     'agc': args.agc,
     'payload_format': args.payload_format,
+    'sampling_rate': args.sampling_rate,
 }
 
 speech = LiveSpeechDetector(**config)
