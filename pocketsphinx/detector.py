@@ -44,6 +44,14 @@ import requests
 DefaultConfig = Decoder.default_config
 
 
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
+
 def get_model_path():
     """ Return path to the model. """
     return os.path.join(os.path.dirname(__file__), 'model')
@@ -211,8 +219,9 @@ class LiveSpeechDetector(BasicDetector):
                         # detect silence after wake word
                         if reclen > 30 or (reclen > 2 and not self.in_speech):
                             print("")
-                            # stop after 30 seconds or after 5 seconds of silence after start
+                            # stop after 30 seconds or after 2 seconds of silence after start
                             self.notify_end()
+                            print(f"Recorded {reclen} seconds of audio")
                             self.send_sample()
                             self.recording = None
                             self.recording_buffer = None
@@ -229,7 +238,7 @@ class LiveSpeechDetector(BasicDetector):
         raise StopIteration
 
     def send_sample(self):
-        print(f'Buffer size: {len(self.recording_buffer)}')
+        # print(f'Buffer size: {len(self.recording_buffer)}')
         with io.BytesIO() as f:
             with wave.open(f, mode='wb') as wav:
                 wav.setnchannels(1)
@@ -238,7 +247,7 @@ class LiveSpeechDetector(BasicDetector):
                 wav.writeframes(self.recording_buffer)
 
             data = f.getvalue()
-            print(f'Bytes of data: {len(data)}')
+            print(f'Payload size: {sizeof_fmt(len(data))}')
 
             if self.url:
                 res = requests.post(self.url, data=data, auth=self.auth, headers={"Content-Type": "audio/vnd.wave;codec=1"})
