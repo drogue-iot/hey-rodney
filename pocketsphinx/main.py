@@ -8,7 +8,7 @@ from detector import LiveSpeechDetector
 from urllib.parse import urljoin, urlencode, quote
 
 parser = argparse.ArgumentParser(description='Hey Rodney')
-parser.add_argument('-k', '--keyphrase', dest='keyphrase', default='rodney',
+parser.add_argument('-k', '--keyphrase', dest='keyphrase', default='hay rodney',
                     help='keyphrase to detect')
 parser.add_argument('-t', '--threshold', dest='threshold', default='1e-20',
                     type=float, help='KWS threshold (default: 1e-20)')
