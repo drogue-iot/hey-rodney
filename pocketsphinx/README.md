@@ -15,6 +15,8 @@ http POST https://device-management-service-drogue-iot.my.cluster/api/v1/devices
 
 ## Container host
 
+The multi-arch image is available for `armv7`, `aarch64`, and `amd64`.
+
 **Note:** Ubuntu 20.10 seems to be broken on the Raspberry Pi 3. Fedora IoT is not supported for the Raspberry Pi 4.
 
 ### Ubuntu 20.10
@@ -27,13 +29,15 @@ apt-get install podman runc
 
 ### Fedora IoT
 
-Take a look at the documentation on how to get Fedora IoT your Raspberry Pi: https://docs.fedoraproject.org/en-US/iot/physical-device-setup/
+Take a look at the documentation on how to get Fedora IoT on your Raspberry Pi: https://docs.fedoraproject.org/en-US/iot/physical-device-setup/
 
-Podman comes pre-installed with Fedora IoT.
+Podman comes pre-installed with Fedora IoT, so there is no need to install anything in addition.
+
+**Note:** You may need to grow the system partition before you can pull images: https://lists.fedoraproject.org/archives/list/iot@lists.fedoraproject.org/thread/CY2ZB7IB3LNLBYUXL3ZQVD3FW27RTXWI/#WDH64ZCOWV52HDJUJBIDSFR5D7YR37O7
 
 ## Audio device
 
-You can use `aplay` from the container to check which sounds cards are available to the container:
+You can use `arecord` from the container to check which sounds cards are available to the container:
 
 ~~~bash
 podman run --rm -ti --device --entrypoint arecord /dev/snd ghcr.io/drogue-iot/hey-rodney-pocketsphinx:latest --list-devices
@@ -90,8 +94,8 @@ podman run \
   ghcr.io/drogue-iot/hey-rodney-pocketsphinx:latest \
   -d rodney1 -e https://http-endpoint-drogue-iot.my.cluster \
   -u foo -p bar \
-  -i plughw:CARD=M0,DEV=0 \
-  -o plughw:CARD=M0,DEV=0 \
+  -i plughw:CARD=headset,DEV=0 \
+  -o plughw:CARD=headset,DEV=0 \
   
 ~~~
 

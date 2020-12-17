@@ -39,6 +39,23 @@ Deploy the `deploy/` folder using:
 kubectl apply -k deploy/
 ~~~
 
+Deploying the setup will create a "rules" files inside the `ConfigMap` named `hey-rodney-config`. You can use this
+to configure additional rules beside the one provided.
+
+The "matcher" is a regular expression, which can also have groups and named groups. These groups can be re-used in
+the command section:
+
+~~~yaml
+rules:
+  - matcher: say hello to (.*)
+    commands:
+      - execute: [ "echo", "Hello to: ${1}" ]
+~~~
+
+The commands that you execute are executed as part of the request handling, inside the container. This isn't optimal!
+Then again, this is just a demo! `kubectl` is part of the container. If you need other commands, you need to build
+your own image, or raise a PR.
+
 ## Testing
 
 If a Raspberry Pi setup is not feasible for your, or you are frustrated with wake word detection, you can also record
@@ -57,11 +74,19 @@ Sometimes recording seems to lag. You hear the *bing*, but it didn't detect anyt
 Check the CPU load of your Raspberry Pi, if it shows a `python3` process consuming ~99% of your CPU, then you simply
 need more compute power. Or you need to accept the fact that it lags a bit.
 
+### It doesn't wake up
+
+Check your microphone! The quality of the microphone and surrounding noises can make a huge difference. A headset
+gives some good results, although it definitely isn't as cool as a desk microphone.
+
+After you fiddled a bit with an audio setup like this, you suddenly have much more respect for your average voice
+assistant at home.
+
 ### Typos
 
-I am pretty sure there are some typos in this repository. However, some of them are on purpose.
+I am pretty sure there are some typos in this repository. However, some of them are intentionally.
 
-For example the phase for waking up Rodney should be "Hey Rodney", turns out that setting the keyphrase to "hay rodney"
+For example, the phase for waking up Rodney should be "Hey Rodney", turns out that setting the keyphrase to "hay rodney"
 works a bit better.
 
 When defining rules for processing, it may be necessary to take into account several alternatives for some words.
