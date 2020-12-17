@@ -24,10 +24,57 @@ In a nutshell:
 
 ## Installation
 
+### On device
+
 Check out the installation here: [pocketsphinx/](pocketsphinx/).
 
 **Note:** This installation is based on *Pocketsphinx* for the moment. See below for evaluations of the different
 options of wake word detection. Feel free to propose additional options.
+
+### Cloud
+
+Deploy the `deploy/` folder using:
+
+~~~shell
+kubectl apply -k deploy/
+~~~
+
+## Testing
+
+If a Raspberry Pi setup is not feasible for your, or you are frustrated with wake word detection, you can also record
+an audio sample in a WAV file and manually submit it:
+
+~~~bash
+cat restart-console-pods.wav | http -v -a device:password POST https://http-endpoint-drogue-iot.my.cluster/publish/device/voice "Content-Type:audio/wav"
+~~~
+
+## Errors and happy little accidents
+
+### Lagging in recording
+
+Sometimes recording seems to lag. You hear the *bing*, but it didn't detect anything.
+
+Check the CPU load of your Raspberry Pi, if it shows a `python3` process consuming ~99% of your CPU, then you simply
+need more compute power. Or you need to accept the fact that it lags a bit.
+
+### Typos
+
+I am pretty sure there are some typos in this repository. However, some of them are on purpose.
+
+For example the phase for waking up Rodney should be "Hey Rodney", turns out that setting the keyphrase to "hay rodney"
+works a bit better.
+
+When defining rules for processing, it may be necessary to take into account several alternatives for some words.
+For example "restart console pods" most often gets transcribed as "restart console pots" and sometimes as
+"restart console parts". So the matcher (being a regular expression) should be "restart console (pods|parts|pots)".
+
+### `413` when submitting voice sample
+
+If you get an error `413`, you might need to increase the maximum payload size:
+
+~~~
+kn service update http-endpoint -e MAX_PAYLOAD_SIZE=4194304 # 4MiB
+~~~
 
 ## Evaluation of wake word detection solutions
 
