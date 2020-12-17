@@ -11,6 +11,10 @@ secretGenerator:
       - credentials.json
 
 resources:
+  - configuration.yaml
+  - serviceaccount.yaml
+  - role.yaml
+  - role-binding.yaml
   - source.yaml
   - service-converter.yaml
   - service-backend.yaml

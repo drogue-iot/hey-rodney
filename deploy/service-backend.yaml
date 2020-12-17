@@ -9,9 +9,19 @@ metadata:
 spec:
   template:
     spec:
+      serviceAccountName: hey-rodney-backend
       containers:
-      - env:
-        image: ghcr.io/drogue-iot/hey-rodney-backend:latest
-        resources:
-          limits:
-            memory: 128Mi
+        - image: ghcr.io/drogue-iot/hey-rodney-backend:latest
+          env:
+            - name: QUARKUS_LOG_LEVEL
+              value: DEBUG
+          resources:
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config
+      volumes:
+        - name: config
+          configMap:
+            name: hey-rodney-config
