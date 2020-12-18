@@ -242,9 +242,9 @@ class LiveSpeechDetector(BasicDetector):
                         if reclen > 30 or (reclen > 2 and not self.in_speech):
                             print("")
                             # stop after 30 seconds or after 2 seconds of silence after start
-                            self.notify_end()
                             print("Recorded %.1f seconds of audio" % reclen)
                             self.send_sample()
+                            self.notify_end()
                             self.recording = None
                             self.recording_buffer = None
 
