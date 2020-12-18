@@ -209,6 +209,11 @@ class LiveSpeechDetector(BasicDetector):
 
                     rlen = rlen * 2  # int16, which is two bytes
                     if rlen == 0:
+                        if self.force_alsa:
+                            # the "Ad" interface for ALSA is non-blocking,
+                            # while the implementation for PulseAudio is blocking.
+                            # Yet we seem to have no way to "wait" for data, so we take a quick nap.
+                            time.sleep(0.05)
                         continue
 
                     if self.debug:
