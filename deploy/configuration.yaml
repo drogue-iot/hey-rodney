@@ -5,7 +5,7 @@ metadata:
 data:
   rules.yaml: |
     rules:
-      - matcher: restart console (pods|parts|pots)
+      - matcher: restart console (pods|parts|pots|ports)
         commands:
           - execute: [ "kubectl", "delete", "pods", "-l", "app=console-backend"]
           - execute: [ "kubectl", "delete", "pods", "-l", "app=console-frontend"]
