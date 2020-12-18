@@ -32,7 +32,7 @@ parser.add_argument('--payload-format', dest='payload_format',
 parser.add_argument('--min', dest='min',
                     help='The minimum number of seconds to record', default='2', type=float)
 parser.add_argument('--max', dest='max',
-                    help='The maximum number of seconds to record', default='2', type=float)
+                    help='The maximum number of seconds to record', default='15', type=float)
 args = parser.parse_args()
 
 force_alsa = os.getenv("FORCE_ALSA", "false")
