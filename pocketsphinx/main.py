@@ -30,9 +30,9 @@ parser.add_argument('--opus-application', dest='opus_application',
 parser.add_argument('--payload-format', dest='payload_format',
                     help='The encoding of the payload format (default: wav, other: opus)', default='wav')
 parser.add_argument('--min', dest='min',
-                    help='The minimum number of seconds to record', default='2')
+                    help='The minimum number of seconds to record', default='2', type=float)
 parser.add_argument('--max', dest='max',
-                    help='The maximum number of seconds to record', default='2')
+                    help='The maximum number of seconds to record', default='2', type=float)
 args = parser.parse_args()
 
 force_alsa = os.getenv("FORCE_ALSA", "false")
