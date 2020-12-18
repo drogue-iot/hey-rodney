@@ -252,9 +252,9 @@ class LiveSpeechDetector(BasicDetector):
                     if self.keyphrase and self.hyp():
                         # detect wake word
                         with self.end_utterance():
+                            self.notify_start()
                             self.recording = time.time()
                             self.recording_buffer = bytearray()
-                            self.notify_start()
                             yield self
 
     def stop(self, *args, **kwargs):
