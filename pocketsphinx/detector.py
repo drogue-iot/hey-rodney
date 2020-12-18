@@ -180,6 +180,8 @@ class LiveSpeechDetector(BasicDetector):
         self.notification_end = kwargs.pop('sound_end', None)
         self.output_device = kwargs.pop('output_device', None)
         self.force_alsa = kwargs.pop('force_alsa', False)
+        self.min_record = kwargs.pop('min_record', 2)
+        self.max_record = kwargs.pop('max_record', 30)
 
         self.keyphrase = kwargs.get('keyphrase')
 
@@ -224,7 +226,7 @@ class LiveSpeechDetector(BasicDetector):
 
                     if self.recording:
                         self.recording_buffer.extend(buf)
-                        print(f"\rBuffer len = {len(self.recording_buffer)}", end='')
+                        print(f"\rBuffer len = {len(self.recording_buffer)}, duration = {reclen:.1f} s", end='')
 
                     now = time.time()
 

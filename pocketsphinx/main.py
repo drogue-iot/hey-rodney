@@ -29,6 +29,10 @@ parser.add_argument('--opus-application', dest='opus_application',
                     default="voip")
 parser.add_argument('--payload-format', dest='payload_format',
                     help='The encoding of the payload format (default: wav, other: opus)', default='wav')
+parser.add_argument('--min', dest='min',
+                    help='The minimum number of seconds to record', default='2')
+parser.add_argument('--max', dest='max',
+                    help='The maximum number of seconds to record', default='2')
 args = parser.parse_args()
 
 force_alsa = os.getenv("FORCE_ALSA", "false")
@@ -71,6 +75,8 @@ config = {
     'payload_format': args.payload_format,
     'sampling_rate': args.sampling_rate,
     'opus_application': args.opus_application,
+    'min_record': args.min,
+    'max_record': args.max,
 }
 
 speech = LiveSpeechDetector(**config)
