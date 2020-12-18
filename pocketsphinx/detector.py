@@ -239,7 +239,7 @@ class LiveSpeechDetector(BasicDetector):
                         print(f"\rBuffer len = {len(self.recording_buffer)}, duration = {reclen:.1f} s", end='')
 
                         # detect silence after wake word
-                        if reclen > 30 or (reclen > 2 and not self.in_speech):
+                        if reclen > self.max_record or (reclen > self.min_record and not self.in_speech):
                             print("")
                             # stop after 30 seconds or after 2 seconds of silence after start
                             print("Recorded %.1f seconds of audio" % reclen)
