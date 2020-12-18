@@ -17,15 +17,24 @@ http POST https://device-management-service-drogue-iot.my.cluster/api/v1/devices
 
 The multi-arch image is available for `armv7`, `aarch64`, and `amd64`.
 
-**Note:** Ubuntu 20.10 seems to be broken on the Raspberry Pi 3. Fedora IoT is not supported for the Raspberry Pi 4.
+**Note:** Ubuntu 20.10 seems to be broken on the Raspberry Pi 3, I am not able to fire up containers due to some
+segfaults. Fedora IoT is not supported for the Raspberry Pi 4.
+
+**Note:** You can of course also run this on your `amd64` desktop/laptop.
 
 ### Ubuntu 20.10
 
 You will need to install podman:
 
 ~~~bash
-apt-get install podman runc
+sudo apt-get install podman runc
 ~~~
+
+**Can it run with Docker?** Maybe, I guess. I didn't test. Let me know. If you prefer typing in `docker`, you can
+set an alias: `alias docker=podman`.
+
+**Why use `sudo` if you also use `podman`?** We need to pass in the ALSA sound device into the container. This
+requires additional privileges. Maybe there is a better way, let me know. 
 
 ### Fedora IoT
 
@@ -40,7 +49,7 @@ Podman comes pre-installed with Fedora IoT, so there is no need to install anyth
 You can use `arecord` from the container to check which sounds cards are available to the container:
 
 ~~~bash
-podman run --rm -ti --device --entrypoint arecord /dev/snd ghcr.io/drogue-iot/hey-rodney-pocketsphinx:latest --list-devices
+sudo podman run --rm -ti --device /dev/snd --entrypoint arecord ghcr.io/drogue-iot/hey-rodney-pocketsphinx:latest --list-devices
 ~~~
 
 The output should be something like this:
@@ -56,7 +65,7 @@ As you can see, I have the Raspberry Pi onboard card (`bcm2835`) and an addition
 However, we need to pass in the device name using ALSA's device name syntax. You can get this list by executing:
 
 ~~~
-podman run --rm -ti --device --entrypoint arecord /dev/snd ghcr.io/drogue-iot/hey-rodney-pocketsphinx:latest --list-pcm
+sudo podman run --rm -ti --device /dev/snd --entrypoint arecord ghcr.io/drogue-iot/hey-rodney-pocketsphinx:latest --list-pcm
 ~~~
 
 This list is much longer, so you need to spot your device:
@@ -73,7 +82,7 @@ plughw:CARD=headset,DEV=0
 
 My headset from before is `plughw:CARD=headset,DEV=0` here. Notice that the same headset shows up multiple times. This
 is because there are multiple ways to connect to the hardware. The best approach is to pick the one starting with
-`plughw`, because this allows to run automatic format and sample conversion as necessary.
+`plughw`, because this one supports automatic format and sample conversion if needed.
 
 You might also want to pick an output device. In the case of my headset, this is actually the same device. However,
 you can use `aplay` (instead of `arecord`) to list the available output devices, and pick an alternate one instead.
@@ -86,14 +95,18 @@ in order to make the devices available inside the container.
 **Note:** Hot-plugging devices does not work, as new devices will appear in the host, but will not get patched through
 to the container.
 
+You will also need to register a new device on the cloud side first. The following example assumes you created a
+device `rodney1`, with the password `password1`:
+
 ~~~bash
-podman run \
+ENDPOINT="https://http-endpoint-drogue-iot.my.cluster"
+sudo podman run \
   --rm -ti \
   --device /dev/snd \
   -e FORCE_ALSA=true \
   ghcr.io/drogue-iot/hey-rodney-pocketsphinx:latest \
-  -d rodney1 -e https://http-endpoint-drogue-iot.my.cluster \
-  -u foo -p bar \
+  -d rodney1 -e "$ENDPOINT" \
+  -u rodney1 -p password1 \
   -i plughw:CARD=headset,DEV=0 \
   -o plughw:CARD=headset,DEV=0 \
   
