@@ -1,5 +1,7 @@
 # "Hey Rodney, …"
 
+[![Matrix](https://img.shields.io/matrix/drogue-iot:matrix.org)](https://matrix.to/#/#drogue-iot:matrix.org)
+
 The overall idea is to have a voice assistant for Kubernetes. Re-using the components that we build in
 [Drogue IoT](https://github.com/drogue-iot).
 
