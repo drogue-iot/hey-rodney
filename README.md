@@ -21,7 +21,7 @@ In a nutshell:
 
 * This is a demo. Don't expect too much ;-)
 * The accuracy of wake word and speech recognition is highly dependency on the microphone you use. Really, I mean it!
-  
+
   If you feel that it is bad, double check the quality of your recordings.
 
 ## Installation
@@ -105,75 +105,11 @@ kn service update http-endpoint -e MAX_PAYLOAD_SIZE=4194304 # 4MiB
 
 ## Evaluation of wake word detection solutions
 
-### Mycroft Precise
+|     | [Pocketsphinx](pocketsphinx/)  | [Mycroft Precise](mycroft-precise/) | [Vosk & Kaldi](vosk/) |
+|-----|:--------------:|:---------------:|:------------:|
+|Pros | <ul><li align="left"> Easy to configure</li> <li align="left">  Provides silence detection </li></ul> | <ul><li align="left"> No false positives</li> </ul> | <ul><li align="left"> No direct wake-word functionality </li> <li align="left"> Ready to run container with Websocket integration </li></ul> |
+|Cons | <ul><li align="left"> Either triggers to often, or not often enough </li></ul> | <ul><li align="left"> Rarely triggers </li><li align="left"> Hard to set up </li><li align="left"> No silence detection </li></ul> | <ul><li align="left"> Need to filter out "wake word" variants ( "he wrote me" -> "hey rodney" )</li><li align="left"> Accuracy is poor </li></ul> |
 
-Build:
-
-~~~shell script
-podman build . -t quay.io/ctrontesting/mycroft-precise:latest
-~~~
-
-Run (`fish`):
-~~~shell script
-sudo podman run --rm -v (pwd)/asound.conf:/etc/asound.conf:z --device /dev/snd -ti quay.io/ctrontesting/mycroft-precise:latest
-~~~
-
-Pros:
-
-  * No false positives 
-
-Cons:
-
-  * Rarely triggers
-  * Hard to set up
-  * No silence detection
-
-### Pocketsphinx
-
-Build:
-
-~~~shell script
-podman build . -f Dockerfile -t quay.io/ctrontesting/pocketsphinx:latest
-~~~
-
-Run (`fish`): 
-
-~~~shell script
-podman run --rm -ti -v /run/user/(id -u)/:/run/user/(id -u)/ -e DEVICE_ID=rodney1 -e ENDPOINT=https://http-endpoint-drogue-iot.apps.wonderful.iot-playground.org -e XDG_RUNTIME_DIR=/run/user/(id -u) -e PULSE_SERVER=/run/user/(id -u)/pulse/native --security-opt label=disable quay.io/ctrontesting/pocketsphinx:latest
-~~~
-
-Pros:
-
-  * Easy to configure
-  * Provides silence detection
-
-Cons:
-
-  * Either triggers to often, or not often enough
-
-### Vosk & Kaldi
-
-Run server:
-
-~~~shell script
-podman run -ti --rm -p 2700:2700 docker.io/alphacep/kaldi-en:latest
-~~~
-
-Then run client:
-
-~~~shell script
-./vosk/test_microphone.py
-~~~
-
-Pros:
-
-  * No direct wake-word functionality
-  * Ready to run container with Websocket integration
-
-Cons:
-
-  * Need to filter out "wake word" variants ( "he wrote me" -> "hey rodney" )
-  * Accuracy is poor
 
 ## Speech to text
 

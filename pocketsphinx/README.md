@@ -1,4 +1,16 @@
-# Installation
+### Build:
+
+~~~shell script
+podman build . -f Dockerfile -t quay.io/ctrontesting/pocketsphinx:latest
+~~~
+
+### Run (`fish`):
+
+~~~shell script
+podman run --rm -ti -v /run/user/(id -u)/:/run/user/(id -u)/ -e DEVICE_ID=rodney1 -e ENDPOINT=https://http-endpoint-drogue-iot.apps.wonderful.iot-playground.org -e XDG_RUNTIME_DIR=/run/user/(id -u) -e PULSE_SERVER=/run/user/(id -u)/pulse/native --security-opt label=disable quay.io/ctrontesting/pocketsphinx:latest
+~~~
+
+## Installation
 
 ## Provision device
 
@@ -34,7 +46,7 @@ sudo apt-get install podman runc
 set an alias: `alias docker=podman`.
 
 **Why use `sudo` if you also use `podman`?** We need to pass in the ALSA sound device into the container. This
-requires additional privileges. Maybe there is a better way, let me know. 
+requires additional privileges. Maybe there is a better way, let me know.
 
 ### Fedora IoT
 
@@ -109,6 +121,14 @@ sudo podman run \
   -u rodney1 -p password1 \
   -i plughw:CARD=headset,DEV=0 \
   -o plughw:CARD=headset,DEV=0 \
-  
+
 ~~~
 
+### Pros:
+
+  * Easy to configure
+  * Provides silence detection
+
+### Cons:
+
+  * Either triggers to often, or not often enough
